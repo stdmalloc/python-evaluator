@@ -19,11 +19,12 @@ class Op_Branch:
 #main function
 def main(token_chain):
     #uses shunting yard to make an ast
+    
     output, op_stack = [], []
     for ind, token in enumerate(token_chain):
         token_type = get_piece_type(token)
 
-        #if num
+        #default straight to output
         if token_type == 'num':
             output.append(token)
 

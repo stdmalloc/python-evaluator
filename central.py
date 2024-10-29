@@ -14,7 +14,7 @@ def checkifnum(piece):
         return False
 piece_type_info = {
     'num': checkifnum, #number (int or float)
-    'mop': lambda i: i in mop_info.keys(), #math operation
+    'mop': lambda i: i in mop_list, #math operation
     'pts': lambda i: i in ('(', ')'), #parentheses
     'wsp': lambda i: i in tuple(whitespace), #whitespace
     'prd': lambda i: i == '.', #period
@@ -31,14 +31,27 @@ def check_if_piece_type(target_type, piece):
 used in parser
 
 defines how to handle math operations
+
+mop_list defines which symbols are used in the expression notation
+mop_info defines the behaviors of the symbols
+    note the minus sign split into -u and -b since it denotes two separate operations
 '''
+mop_list = [
+    '+',
+    '-',
+    '*',
+    '/',
+    '//',
+    '**',
+    '%'
+]
 mop_info = {
     '+': {'prec': 2, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
     '-u': {'prec': 3, 'num_args':1, 'eval_func': lambda args:-args[0]},
-    '-b': {'prec': 2, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
-    '*': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
-    '/': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
-    '//': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
-    '**': {'prec': 4, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
-    '%': {'prec': 1, 'num_args':2, 'eval_func': lambda args:args[0]+args[1]},
+    '-b': {'prec': 2, 'num_args':2, 'eval_func': lambda args:args[0]-args[1]},
+    '*': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]*args[1]},
+    '/': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]/args[1]},
+    '//': {'prec': 3, 'num_args':2, 'eval_func': lambda args:args[0]//args[1]},
+    '**': {'prec': 4, 'num_args':2, 'eval_func': lambda args:args[0]**args[1]},
+    '%': {'prec': 1, 'num_args':2, 'eval_func': lambda args:args[0]%args[1]},
 }
