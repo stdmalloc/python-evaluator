@@ -2,12 +2,11 @@ from central import get_piece_type, check_if_piece_type
 
 #main function
 def main(input_expr):
-
     #handles groupings of one piece type
     output, cache = [], ''
     for char in input_expr:
         char_type = get_piece_type(char)
-        if char_type in ('mop', 'pts', 'prd'):
+        if char_type in ('nop', 'frg', 'opt', 'cpt', 'prd'):
             if cache:
                 output.append(cache)
                 cache = ''
@@ -22,6 +21,7 @@ def main(input_expr):
         output.append(cache)
 
     #handles groupings of multiple piece types
+    #ind and while used so that ind can be shifted around as needed
     ind=0
     while True:
         if ind == len(output):
@@ -33,10 +33,14 @@ def main(input_expr):
                 if check_if_piece_type('num', output[ind+1]):
                     output[ind] += output[ind+1]
                     output.pop(ind+1)
+                else:
+                    raise ValueError('issue at tokenizing -> invalid . at char #0')
             elif ind==len(output)-1:
                 if check_if_piece_type('num', output[ind-1]):
                     output[ind-1] += '.'
                     output.pop(ind)
+                else:
+                    raise ValueError(f'issue at tokenizing -> invalid . at char #{ind}')
             else:
                 num_bf_is_num = check_if_piece_type('num', output[ind-1])
                 num_aft_is_num = check_if_piece_type('num', output[ind+1])
@@ -53,16 +57,19 @@ def main(input_expr):
                     if check_if_piece_type('num', output[ind+1]):
                         output[ind] += output[ind+1]
                         output.pop(ind+1)
+                else:
+                    raise ValueError(f'issue at tokenizing -> invalid . at char #{ind}')
 
         #puts together multisymbol operations
-        elif output[ind] in ('/', '*'):
+        elif output[ind] in ('/', '*', '<', '>'):
             if output[ind+1] == output[ind]:
-                #since the only multisymbol operations are // and **
+                #since the only multisymbol operations are //, **, <<, and >>
                 #-> which are two of the same symbol
                 output[ind] *= 2
                 output.pop(ind+1)
 
+        #increment ind
         ind+=1
 
-    #output
+    #return
     return output
