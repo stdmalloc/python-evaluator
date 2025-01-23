@@ -89,7 +89,7 @@ nop_info = {
     '~': {'prec':1, 'num_args':1, 'eval_func':lambda args:~args[0], 'assoc':'r'},
     '|': {'prec':1, 'num_args':2, 'eval_func':lambda args:args[0]|args[1], 'assoc':'l'},
     '^': {'prec':1, 'num_args':2, 'eval_func':lambda args:args[0]^args[1], 'assoc':'l'},
-    '&': {'prec':1, 'num_args':2, 'eval_func':lambda args:args[0]^args[1], 'assoc':'l'},
+    '&': {'prec':1, 'num_args':2, 'eval_func':lambda args:args[0]&args[1], 'assoc':'l'},
     '<<': {'prec':2, 'num_args':2, 'eval_func':lambda args:args[0]<<args[1], 'assoc':'l'},
     '>>': {'prec':2, 'num_args':2, 'eval_func':lambda args:args[0]>>args[1], 'assoc':'l'},
 }
