@@ -21,8 +21,8 @@ def checkifnum(piece:str):
         return False
 piece_type_info = {
     'num': checkifnum, #number (int or float)
-    'nop': lambda i: i in nop_list, #numerical operation
     'frg': lambda i: i in frg_list, #fragment
+    'nop': lambda i: i in nop_list, #numerical operation
     'opt': lambda i: i == '(', #opening parenthesis
     'cpt': lambda i: i==')', #closing parenthesis
     'wsp': lambda i: i in whitespace, #whitespace

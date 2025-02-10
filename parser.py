@@ -61,7 +61,7 @@ def main(token_list):
                         token = '-u'
                     else:
                         raise SyntaxError(
-                            f'issue at parsing -> invalid {repr(token_list[ind-1])} at char #{ind-1}'
+                            f'issue at parsing -> invalid {repr(token_list[ind-1])} at char {ind-1}'
                         )
             
             #continue normally
