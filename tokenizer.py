@@ -9,7 +9,7 @@ def main(input_expr):
         char_type = get_piece_type(char)
 
         #add cache to output as normal
-        if char_type in ('nop', 'opt', 'cpt'):
+        if char_type in ('opt', 'cpt'):
             if cache:
                 output.append(cache)
                 cache = ''
@@ -22,7 +22,7 @@ def main(input_expr):
             #no append bc wsp ignored
 
         #putting together multisymbol operations
-        elif char_type == 'frg':
+        elif char_type == 'nop':
             if cache:
                 output.append(cache)
                 cache = ''

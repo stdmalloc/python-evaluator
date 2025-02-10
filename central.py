@@ -9,7 +9,6 @@ used in tokenizer
 defines types of pieces (potential token)
 also checks for + gets piece type of an input
 
-fragment = symbol in a multisymbol operation
 could be its own symbol; combined if in pair, ignored if not
 ex: << = shift left; < = fragment
 '''
@@ -21,7 +20,6 @@ def checkifnum(piece:str):
         return False
 piece_type_info = {
     'num': checkifnum, #number (int or float)
-    'frg': lambda i: i in frg_list, #fragment
     'nop': lambda i: i in nop_list, #numerical operation
     'opt': lambda i: i == '(', #opening parenthesis
     'cpt': lambda i: i==')', #closing parenthesis
@@ -49,15 +47,10 @@ high prec evaluates before lower prec
 
 associativity defines what order operations of the same precedent evaluate in
 'l' = left associative; 'r' = right associative
+
+plan on implementing '<' and '>' later w/ logic
+for now, is just there to act as a fragment for bitwise
 '''
-frg_list = [
-    #arithmetic
-    '/',
-    '*',
-    #bitwise
-    '<',
-    '>',
-]
 nop_list = [
     #arithmetic
     '+',
@@ -74,6 +67,9 @@ nop_list = [
     '&',
     '<<',
     '>>',
+    #see above
+    '<',
+    '>',
 ]
 nop_info = {
     #arithmetic
