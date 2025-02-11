@@ -1,6 +1,0 @@
-#ignore pycache
-__pycache__/
-
-#ignore git files
-.gitignore
-.gitattributes
