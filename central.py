@@ -1,4 +1,5 @@
 from string import whitespace
+from math import sin, cos, tan
 
 #notes here are for each section
 #not for the whole file
@@ -10,7 +11,10 @@ defines types of pieces (potential token)
 also checks for + gets piece type of an input
 
 could be its own symbol; combined if in pair, ignored if not
-ex: << = shift left; < = fragment
+ex: << = shift left; < = will be combined later
+
+nop split into list and info to handle unary and binary subtraction
+ie, detection and processing work differently so they use different lists
 '''
 def checkifnum(piece:str):
     try:
@@ -18,13 +22,16 @@ def checkifnum(piece:str):
         return True
     except:
         return False
+
 piece_type_info = {
     'num': checkifnum, #number (int or float)
     'nop': lambda i: i in nop_list, #numerical operation
-    'opt': lambda i: i == '(', #opening parenthesis
+    'opt': lambda i: i=='(', #opening parenthesis
     'cpt': lambda i: i==')', #closing parenthesis
     'wsp': lambda i: i in whitespace, #whitespace
-    'prd': lambda i: i == '.', #period
+    'prd': lambda i: i=='.', #period
+    'com': lambda i: i==',', #comma
+    'fnc': lambda i: i in fnc_info.keys(), #function
 }
 def get_piece_type(piece):
     for id, check_func in piece_type_info.items():
@@ -88,4 +95,13 @@ nop_info = {
     '&': {'prec':1, 'num_args':2, 'eval_func':lambda args:args[0]&args[1], 'assoc':'l'},
     '<<': {'prec':2, 'num_args':2, 'eval_func':lambda args:args[0]<<args[1], 'assoc':'l'},
     '>>': {'prec':2, 'num_args':2, 'eval_func':lambda args:args[0]>>args[1], 'assoc':'l'},
+}
+fnc_info = {
+    #trigonometric
+    'sin': {'num_args':1, 'eval_func':lambda args:sin(args[0])},
+    'cos': {'num_args':1, 'eval_func':lambda args:cos(args[0])},
+    'tan': {'num_args':1, 'eval_func':lambda args:tan(args[0])},
+    'csc': {'num_args':1, 'eval_func':lambda args:1/sin(args[0])},
+    'sec': {'num_args':1, 'eval_func':lambda args:1/cos(args[0])},
+    'cot': {'num_args':1, 'eval_func':lambda args:1/tan(args[0])},
 }

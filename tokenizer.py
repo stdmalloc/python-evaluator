@@ -9,7 +9,7 @@ def main(input_expr):
         char_type = get_piece_type(char)
 
         #add cache to output as normal
-        if char_type in ('opt', 'cpt'):
+        if char_type in ('opt', 'cpt', 'com'):
             if cache:
                 output.append(cache)
                 cache = ''
@@ -27,6 +27,8 @@ def main(input_expr):
                 output.append(cache)
                 cache = ''
             if output[-1]==char:
+                #since all multisymbol operations
+                #are just two of one character
                 output[-1]*=2
             else:
                 output.append(char)
@@ -37,19 +39,19 @@ def main(input_expr):
             if ind==0: #first char
                 if not check_if_piece_type('num', input_expr[1]):
                     raise SyntaxError(
-                        'issue at tokenizing -> invalid . at char 0'
+                        f'issue at tokenizing -> invalid "." at char 0'
                     )
                 cache+='.'
             elif ind==len_input-1: #last char
                 if not check_if_piece_type('num', input_expr[len_input-1]):
                     raise SyntaxError(
-                        f'issue at tokenizing -> invalid . at char {len_input-1}'
+                        f'issue at tokenizing -> invalid "." at char {len_input-1}'
                     )
                 cache+='.'
             else: #any char in b/w
                 if not check_if_piece_type('num', input_expr[ind-1]) and not check_if_piece_type('num', input_expr[ind+1]):
                     raise SyntaxError(
-                        f'issue at tokenizing -> invalid . at char {ind}'
+                        f'issue at tokenizing -> invalid "." at char {ind}'
                     )
                 else:
                     cache+='.'
@@ -58,6 +60,7 @@ def main(input_expr):
         else:
             cache += char
     
+    #add cache if it still exists
     if cache:
         output.append(cache)
 

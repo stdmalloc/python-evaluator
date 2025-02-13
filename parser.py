@@ -1,4 +1,5 @@
-from central import get_piece_type, nop_info
+from central import get_piece_type, check_if_piece_type
+from central import fnc_info, nop_info
 
 #objects
 class Literal:
@@ -16,8 +17,12 @@ class Literal:
 class Op_Branch:
     def __init__(self, op_id, args):
         self.op_id = op_id
-        self.eval_func = nop_info[op_id]['eval_func']
         self.args = args
+
+        if check_if_piece_type('nop', op_id):
+            self.eval_func = nop_info[op_id]['eval_func']
+        else: #op_id is a function
+            self.eval_func = fnc_info[op_id]['eval_func']
     def __repr__(self):
         return f'op_branch(op_id={self.op_id})(args={self.args})'
     def run(self):
@@ -29,6 +34,9 @@ class Op_Branch:
 #main function
 def main(token_list):
     #uses shunting yard to make an ast
+
+    if not token_list:
+        return ''
 
     output, op_stack = [], []
     token_list_len = len(token_list)
@@ -44,6 +52,10 @@ def main(token_list):
         #if number
         if token_type=='num':
             output.append(Literal(token))
+
+        #if function
+        elif token_type=='fnc':
+            op_stack.append(token)
 
         #if numerical operator
         elif token_type=='nop':
@@ -61,7 +73,7 @@ def main(token_list):
                         token = '-u'
                     else:
                         raise SyntaxError(
-                            f'issue at parsing -> invalid {repr(token_list[ind-1])} at char {ind-1}'
+                            f'issue at parsing -> invalid "{repr(token_list[ind-1])}" at token {ind-1}'
                         )
             
             #continue normally
@@ -89,12 +101,13 @@ def main(token_list):
 
 
         #if parenthesis
-        elif token=='(':
+        elif token_type=='opt':
             #add to op_stack
             op_stack.append(token)
-        elif token==')':
+        elif token_type=='cpt':
             #dump operations from op_stack until '(' found
-            # + discard both parenthesis
+            #and discard both parenthesis
+
             while op_stack[-1] != '(':
                 #form expr using top operation in op_stack
                 num_args = nop_info[op_stack[-1]]['num_args']
@@ -106,6 +119,36 @@ def main(token_list):
             
             #pop the opening parenthesis
             op_stack = op_stack[:-1]
+
+            #adding function if exists
+            if not op_stack:
+                ind+=1
+                continue
+            if check_if_piece_type('fnc', op_stack[-1]):
+                #form expr using top function in op_stack
+                num_args = fnc_info[op_stack[-1]]['num_args']
+                output, args = output[:-num_args], output[-num_args:]
+                output.append(Op_Branch(op_stack[-1], args))
+                
+                #pop operation at top of op_stack
+                op_stack = op_stack[:-1]
+
+        #if comma
+        elif token_type=='com':
+            while op_stack[-1] != '(':
+                #form expr using top operation in op_stack
+                num_args = nop_info[op_stack[-1]]['num_args']
+                output, args = output[:-num_args], output[-num_args:]
+                output.append(Op_Branch(op_stack[-1], args))
+
+                #pop operation at top of op_stack
+                op_stack = op_stack[:-1]
+            
+        #invalid token
+        else:
+            raise ValueError(
+                f'issue at parsing -> invalid "{token_list[ind]}" at token {ind}'
+            )
 
         #increment ind
         ind+=1
